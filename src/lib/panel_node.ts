@@ -4,6 +4,7 @@ import {
     RefAttributes,
 } from "react";
 
+import { CustomTab } from "../component";
 import BaseNode from "./base_node";
 import LayoutNode from "./layout_node";
 import { IPanelNode } from "./type";
@@ -18,7 +19,7 @@ class PanelNode extends BaseNode implements IPanelNode {
             onClose: () => void;
             onSelect: () => void;
         } & RefAttributes<HTMLDivElement>
-    >;
+    > = CustomTab;
     title: string;
     selected: boolean = false;
     parent?: WidgetNode;
@@ -28,7 +29,7 @@ class PanelNode extends BaseNode implements IPanelNode {
         super(node.id, node.type);
         this.id = node.id;
         this.Page = node.Page;
-        this.Tab = node.Tab;
+        this.Tab = node.Tab ? node.Tab : this.Tab;
         this.title = node.title;
         this.root = root;
     }

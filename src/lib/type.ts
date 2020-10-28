@@ -34,7 +34,7 @@ export interface INode extends IBaseNode {
 
 export interface IPanelNode extends IBaseNode {
     Page: FunctionComponent;
-    Tab: ForwardRefExoticComponent<
+    Tab?: ForwardRefExoticComponent<
         {
             nodeId: string;
             nodeTitle: string;
