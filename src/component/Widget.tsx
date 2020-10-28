@@ -9,6 +9,7 @@ import {
     findNode,
     LayoutNode,
     MASK_PART,
+    moveNode,
     NODE_TYPE,
     PanelNode,
     removeNode,
@@ -142,143 +143,9 @@ const Widget = (props: { nodeId: string }) => {
                     event.dragEvent.target.id
                 ) as PanelNode;
 
-                if (maskPartContainer.current === MASK_PART.CENTER) {
-                    removeNode(dragNode);
-                    dragNode.appendTo(node);
-                }
-
-                if (
-                    (node.parent?.direction === DIRECTION.ROW ||
-                        node.parent?.direction === DIRECTION.ROWREV) &&
-                    (maskPartContainer.current === MASK_PART.RIGHT ||
-                        maskPartContainer.current === MASK_PART.LEFT)
-                ) {
-                    let index = node.parent.children.findIndex(
-                        (child) => child.id === node.id
-                    );
-                    if (index !== -1) {
-                        const widget = new WidgetNode(
-                            {
-                                id: uniqueId(),
-                                type: NODE_TYPE.WIDGET_NODE,
-                                children: [],
-                            },
-                            node.root
-                        );
-                        removeNode(dragNode);
-                        dragNode.appendTo(widget);
-                        index =
-                            maskPartContainer.current === MASK_PART.LEFT
-                                ? index
-                                : index + 1;
-                        widget.appendTo(node.parent, index);
-                    }
-                }
-
-                if (
-                    (node.parent?.direction === DIRECTION.COLUMN ||
-                        node.parent?.direction === DIRECTION.COLUMNREV) &&
-                    (maskPartContainer.current === MASK_PART.BOTTOM ||
-                        maskPartContainer.current === MASK_PART.TOP)
-                ) {
-                    let index = node.parent.children.findIndex(
-                        (child) => child.id === node.id
-                    );
-                    if (index !== -1) {
-                        const widget = new WidgetNode(
-                            {
-                                id: uniqueId(),
-                                type: NODE_TYPE.WIDGET_NODE,
-                                children: [],
-                            },
-                            node.root
-                        );
-                        removeNode(dragNode);
-                        dragNode.appendTo(widget);
-                        index =
-                            maskPartContainer.current === MASK_PART.TOP
-                                ? index
-                                : index + 1;
-                        widget.appendTo(node.parent, index);
-                    }
-                }
-
-                if (
-                    (node.parent?.direction === DIRECTION.ROW ||
-                        node.parent?.direction === DIRECTION.ROWREV) &&
-                    (maskPartContainer.current === MASK_PART.BOTTOM ||
-                        maskPartContainer.current === MASK_PART.TOP)
-                ) {
-                    const layout = new LayoutNode(
-                        {
-                            id: uniqueId(),
-                            type: NODE_TYPE.LAYOUT_NODE,
-                            direction: DIRECTION.COLUMN,
-                            children: [],
-                        },
-                        node.root
-                    );
-
-                    const widget = new WidgetNode(
-                        {
-                            id: uniqueId(),
-                            type: NODE_TYPE.WIDGET_NODE,
-                            children: [],
-                        },
-                        node.root
-                    );
-
-                    node.parent.replaceNode(node, layout);
-
-                    removeNode(dragNode);
-                    dragNode.appendTo(widget);
-
-                    node.appendTo(layout);
-
-                    maskPartContainer.current === MASK_PART.TOP
-                        ? widget.appendTo(layout, 0)
-                        : widget.appendTo(layout);
-                }
-
-                if (
-                    (node.parent?.direction === DIRECTION.COLUMN ||
-                        node.parent?.direction === DIRECTION.COLUMNREV) &&
-                    (maskPartContainer.current === MASK_PART.RIGHT ||
-                        maskPartContainer.current === MASK_PART.LEFT)
-                ) {
-                    const layout = new LayoutNode(
-                        {
-                            id: uniqueId(),
-                            type: NODE_TYPE.LAYOUT_NODE,
-                            direction: DIRECTION.ROW,
-                            children: [],
-                        },
-                        node.root
-                    );
-
-                    const widget = new WidgetNode(
-                        {
-                            id: uniqueId(),
-                            type: NODE_TYPE.WIDGET_NODE,
-                            children: [],
-                        },
-                        node.root
-                    );
-
-                    node.parent.replaceNode(node, layout);
-
-                    removeNode(dragNode);
-                    dragNode.appendTo(widget);
-
-                    node.appendTo(layout);
-
-                    maskPartContainer.current === MASK_PART.LEFT
-                        ? widget.appendTo(layout, 0)
-                        : widget.appendTo(layout);
-                }
+                moveNode(dragNode, node, maskPartContainer.current!);
 
                 setMaskPart(null);
-                node.root.update();
             })
             .on("dropmove", (event) => {
                 const rect = widgetRef.current?.getBoundingClientRect();

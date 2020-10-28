@@ -1,7 +1,10 @@
+import { uniqueId } from "lodash";
 import { useContext, useMemo } from "react";
 
 import { context } from "../component";
 import { BaseNode, LayoutNode, MASK_PART, Node, WidgetNode } from ".";
+import PanelNode from "./panel_node";
+import { DIRECTION, NODE_TYPE } from "./type";
 
 export const findNode = (node: BaseNode, id: string): BaseNode | undefined => {
     if (node.id === id) {
@@ -30,19 +33,136 @@ export const useParentNode = (id: string): Node | undefined => {
 };
 
 export const moveNode = (
-    node: BaseNode,
-    to: Node,
-    position: MASK_PART | number
+    dragNode: PanelNode,
+    dropNode: WidgetNode,
+    maskPosition: MASK_PART
 ) => {
-    switch (position) {
-        case MASK_PART.CENTER:
-            removeNode(node);
-            node.appendTo(to);
-            break;
-
-        default:
-            break;
+    if (maskPosition === MASK_PART.CENTER) {
+        removeNode(dragNode);
+        dragNode.appendTo(dropNode);
     }
+
+    if (
+        (dropNode.parent?.direction === DIRECTION.ROW ||
+            dropNode.parent?.direction === DIRECTION.ROWREV) &&
+        (maskPosition === MASK_PART.RIGHT || maskPosition === MASK_PART.LEFT)
+    ) {
+        let index = dropNode.parent.children.findIndex(
+            (child) => child.id === dropNode.id
+        );
+        if (index !== -1) {
+            const widget = new WidgetNode(
+                {
+                    id: uniqueId(),
+                    type: NODE_TYPE.WIDGET_NODE,
+                    children: [],
+                },
+                dropNode.root
+            );
+            removeNode(dragNode);
+            dragNode.appendTo(widget);
+            index = maskPosition === MASK_PART.LEFT ? index : index + 1;
+            widget.appendTo(dropNode.parent, index);
+        }
+    }
+
+    if (
+        (dropNode.parent?.direction === DIRECTION.COLUMN ||
+            dropNode.parent?.direction === DIRECTION.COLUMNREV) &&
+        (maskPosition === MASK_PART.BOTTOM || maskPosition === MASK_PART.TOP)
+    ) {
+        let index = dropNode.parent.children.findIndex(
+            (child) => child.id === dropNode.id
+        );
+        if (index !== -1) {
+            const widget = new WidgetNode(
+                {
+                    id: uniqueId(),
+                    type: NODE_TYPE.WIDGET_NODE,
+                    children: [],
+                },
+                dropNode.root
+            );
+            removeNode(dragNode);
+            dragNode.appendTo(widget);
+            index = maskPosition === MASK_PART.TOP ? index : index + 1;
+            widget.appendTo(dropNode.parent, index);
+        }
+    }
+
+    if (
+        (dropNode.parent?.direction === DIRECTION.ROW ||
+            dropNode.parent?.direction === DIRECTION.ROWREV) &&
+        (maskPosition === MASK_PART.BOTTOM || maskPosition === MASK_PART.TOP)
+    ) {
+        const layout = new LayoutNode(
+            {
+                id: uniqueId(),
+                type: NODE_TYPE.LAYOUT_NODE,
+                direction: DIRECTION.COLUMN,
+                children: [],
+            },
+            dropNode.root
+        );
+
+        const widget = new WidgetNode(
+            {
+                id: uniqueId(),
+                type: NODE_TYPE.WIDGET_NODE,
+                children: [],
+            },
+            dropNode.root
+        );
+
+        dropNode.parent.replaceNode(dropNode, layout);
+
+        removeNode(dragNode);
+        dragNode.appendTo(widget);
+
+        dropNode.appendTo(layout);
+
+        maskPosition === MASK_PART.TOP
+            ? widget.appendTo(layout, 0)
+            : widget.appendTo(layout);
+    }
+
+    if (
+        (dropNode.parent?.direction === DIRECTION.COLUMN ||
+            dropNode.parent?.direction === DIRECTION.COLUMNREV) &&
+        (maskPosition === MASK_PART.RIGHT || maskPosition === MASK_PART.LEFT)
+    ) {
+        const layout = new LayoutNode(
+            {
+                id: uniqueId(),
+                type: NODE_TYPE.LAYOUT_NODE,
+                direction: DIRECTION.ROW,
+                children: [],
+            },
+            dropNode.root
+        );
+
+        const widget = new WidgetNode(
+            {
+                id: uniqueId(),
+                type: NODE_TYPE.WIDGET_NODE,
+                children: [],
+            },
+            dropNode.root
+        );
+
+        dropNode.parent.replaceNode(dropNode, layout);
+
+        removeNode(dragNode);
+        dragNode.appendTo(widget);
+
+        dropNode.appendTo(layout);
+
+        maskPosition === MASK_PART.LEFT
+            ? widget.appendTo(layout, 0)
+            : widget.appendTo(layout);
+    }
+
+    dropNode.root.update();
 };
 
 export const removeNode = (node: BaseNode) => {
