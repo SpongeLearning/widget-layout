@@ -1,18 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
 import interact from "interactjs";
-import { uniqueId } from "lodash";
 import React, { useEffect, useMemo, useRef } from "react";
 
 import { useChildNodes, useStateContainer } from "../hook";
 import {
     DIRECTION,
     findNode,
-    LayoutNode,
     MASK_PART,
     moveNode,
-    NODE_TYPE,
     PanelNode,
-    removeNode,
     useNode,
 } from "../lib";
 import WidgetNode from "../lib/widget_node";
