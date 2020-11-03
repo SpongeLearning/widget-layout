@@ -17,11 +17,6 @@ export class BaseNode extends EventEmitter {
     update() {
         this.emit(NODE_EVENT.UPDATE);
     }
-
-    appendTo(node: Node, position?: number, deleteNode = false) {
-        this.parent = node;
-        node.addNode(this, position, deleteNode);
-    }
 }
 
 export default BaseNode;

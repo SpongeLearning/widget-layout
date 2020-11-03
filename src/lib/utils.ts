@@ -32,6 +32,27 @@ export const useParentNode = (id: string): Node | undefined => {
     return parent;
 };
 
+export const movePanelToWidget = (
+    panel: PanelNode,
+    node: WidgetNode,
+    position?: number,
+    deleteNode = false
+) => {
+    panel.parent = node;
+    node.addNode(panel, position, deleteNode);
+};
+
+export const moveNodeToLayout = (
+    node: Node,
+    layout: LayoutNode,
+    position?: number,
+    deleteNode = false
+) => {
+    node.offset = 0;
+    node.parent = layout;
+    layout.addNode(node, position, deleteNode);
+};
+
 export const moveNode = (
     dragNode: PanelNode,
     dropNode: WidgetNode,
@@ -39,7 +60,7 @@ export const moveNode = (
 ) => {
     if (maskPosition === MASK_PART.CENTER) {
         removeNode(dragNode);
-        dragNode.appendTo(dropNode);
+        movePanelToWidget(dragNode, dropNode);
     }
 
     if (
@@ -60,9 +81,9 @@ export const moveNode = (
                 dropNode.root
             );
             removeNode(dragNode);
-            dragNode.appendTo(widget);
+            movePanelToWidget(dragNode, widget);
             index = maskPosition === MASK_PART.LEFT ? index : index + 1;
-            widget.appendTo(dropNode.parent, index);
+            moveNodeToLayout(widget, dropNode.parent, index);
         }
     }
 
@@ -84,9 +105,10 @@ export const moveNode = (
                 dropNode.root
             );
             removeNode(dragNode);
-            dragNode.appendTo(widget);
+            movePanelToWidget(dragNode, widget);
+
             index = maskPosition === MASK_PART.TOP ? index : index + 1;
-            widget.appendTo(dropNode.parent, index);
+            moveNodeToLayout(widget, dropNode.parent, index);
         }
     }
 
@@ -117,13 +139,13 @@ export const moveNode = (
         dropNode.parent.replaceNode(dropNode, layout);
 
         removeNode(dragNode);
-        dragNode.appendTo(widget);
+        movePanelToWidget(dragNode, widget);
 
-        dropNode.appendTo(layout);
+        moveNodeToLayout(dropNode, layout);
 
         maskPosition === MASK_PART.TOP
-            ? widget.appendTo(layout, 0)
-            : widget.appendTo(layout);
+            ? moveNodeToLayout(widget, layout, 0)
+            : moveNodeToLayout(widget, layout);
     }
 
     if (
@@ -153,13 +175,13 @@ export const moveNode = (
         dropNode.parent.replaceNode(dropNode, layout);
 
         removeNode(dragNode);
-        dragNode.appendTo(widget);
+        movePanelToWidget(dragNode, widget);
 
-        dropNode.appendTo(layout);
+        moveNodeToLayout(dropNode, layout);
 
         maskPosition === MASK_PART.LEFT
-            ? widget.appendTo(layout, 0)
-            : widget.appendTo(layout);
+            ? moveNodeToLayout(widget, layout, 0)
+            : moveNodeToLayout(widget, layout);
     }
 
     dropNode.root.update();

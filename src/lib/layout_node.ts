@@ -1,5 +1,6 @@
 import Node from "./node";
 import { DIRECTION, ILayoutNode, IWidgetNode, NODE_TYPE } from "./type";
+import { moveNodeToLayout } from "./utils";
 import WidgetNode from "./widget_node";
 
 class LayoutNode extends Node implements ILayoutNode {
@@ -20,7 +21,7 @@ class LayoutNode extends Node implements ILayoutNode {
                             child as ILayoutNode,
                             this.root
                         );
-                        node.appendTo(this);
+                        moveNodeToLayout(node, this);
                         return node;
                     }
                     case NODE_TYPE.WIDGET_NODE: {
@@ -28,7 +29,7 @@ class LayoutNode extends Node implements ILayoutNode {
                             child as IWidgetNode,
                             this.root
                         );
-                        node.appendTo(this);
+                        moveNodeToLayout(node, this);
                         return node;
                     }
                     default: {

@@ -2,6 +2,7 @@ import LayoutNode from "./layout_node";
 import Node from "./node";
 import PanelNode from "./panel_node";
 import { IWidgetNode } from "./type";
+import { movePanelToWidget } from "./utils";
 
 class WidgetNode extends Node implements IWidgetNode {
     root: LayoutNode;
@@ -13,7 +14,7 @@ class WidgetNode extends Node implements IWidgetNode {
         this.root = root;
         this.children = node.children.map((child) => {
             const node = new PanelNode(child, root);
-            node.appendTo(this);
+            movePanelToWidget(node, this);
             return node;
         });
     }

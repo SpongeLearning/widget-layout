@@ -7,11 +7,6 @@ class Node extends BaseNode {
     height = 0;
     width = 0;
 
-    appendTo(node: Node, position?: number, deleteNode = false) {
-        this.offset = 0;
-        super.appendTo(node, position, deleteNode);
-    }
-
     addNode(node: BaseNode, position?: number, deleteNode = false) {
         if (position == null || position > this.children.length) {
             position = this.children.length;
