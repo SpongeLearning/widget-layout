@@ -41,33 +41,6 @@ class LayoutNode extends Node implements ILayoutNode {
 
         this.direction = node.direction;
     }
-
-    replaceNode(
-        toReplace: LayoutNode | WidgetNode,
-        node: LayoutNode | WidgetNode
-    ) {
-        const index = this.children.findIndex(
-            (child) => child.id === toReplace.id
-        );
-        console.log("index", index, toReplace.id, node.id, this.children);
-        if (index !== -1) {
-            this.children.splice(index, 1, node);
-            node.offset = toReplace.offset;
-            node.parent = toReplace.parent;
-        }
-    }
-
-    updateChildrenOffset(position: number, offset: number) {
-        if (this.children[position - 1]) {
-            this.children[position - 1].offset =
-                this.children[position - 1].offset + offset;
-        }
-
-        if (this.children[position + 1]) {
-            this.children[position + 1].offset =
-                this.children[position + 1].offset - offset;
-        }
-    }
 }
 
 export default LayoutNode;

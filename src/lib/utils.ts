@@ -136,7 +136,7 @@ export const moveNode = (
             dropNode.root
         );
 
-        dropNode.parent.replaceNode(dropNode, layout);
+        replaceNode(dropNode, layout);
 
         removeNode(dragNode);
         movePanelToWidget(dragNode, widget);
@@ -172,7 +172,7 @@ export const moveNode = (
             dropNode.root
         );
 
-        dropNode.parent.replaceNode(dropNode, layout);
+        replaceNode(dropNode, layout);
 
         removeNode(dragNode);
         movePanelToWidget(dragNode, widget);
@@ -193,7 +193,9 @@ export const removeNode = (node: BaseNode) => {
     );
     if (index != null && index !== -1) {
         if (node instanceof WidgetNode) {
-            node.parent?.updateChildrenOffset(index, node.offset);
+            if (node.parent != null) {
+                updateChildrenOffset(node.parent, index, node.offset);
+            }
         }
         node.parent?.children.splice(index, 1);
     }
@@ -207,7 +209,7 @@ export const shakeTree = (node: Node) => {
     }
     if (node instanceof LayoutNode) {
         if (node.children.length === 1 && node.id !== "root") {
-            node.parent?.replaceNode(node, node.children[0]);
+            replaceNode(node, node.children[0]);
             shake = true;
         }
 
@@ -224,4 +226,35 @@ export const shakeTree = (node: Node) => {
     }
 
     return shake;
+};
+
+export const updateChildrenOffset = (
+    node: LayoutNode,
+    position: number,
+    offset: number
+) => {
+    if (node.children[position - 1]) {
+        node.children[position - 1].offset =
+            node.children[position - 1].offset + offset;
+    }
+
+    if (node.children[position + 1]) {
+        node.children[position + 1].offset =
+            node.children[position + 1].offset - offset;
+    }
+};
+
+export const replaceNode = (
+    toReplace: LayoutNode | WidgetNode,
+    node: LayoutNode | WidgetNode
+) => {
+    const index = toReplace.parent?.children.findIndex(
+        (child) => child.id === toReplace.id
+    );
+
+    if (index != null && index !== -1) {
+        toReplace.parent?.children.splice(index, 1, node);
+        node.offset = toReplace.offset;
+        node.parent = toReplace.parent;
+    }
 };
