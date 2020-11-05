@@ -39,18 +39,26 @@ export const movePanelToWidget = (
     deleteNode = false
 ) => {
     panel.parent = node;
-    node.addNode(panel, position, deleteNode);
+
+    if (position == null || position > node.children.length) {
+        position = node.children.length;
+    }
+    node.children.splice(position, deleteNode ? 1 : 0, panel);
 };
 
 export const moveNodeToLayout = (
-    node: Node,
+    node: WidgetNode | LayoutNode,
     layout: LayoutNode,
     position?: number,
     deleteNode = false
 ) => {
     node.offset = 0;
     node.parent = layout;
-    layout.addNode(node, position, deleteNode);
+
+    if (position == null || position > layout.children.length) {
+        position = layout.children.length;
+    }
+    layout.children.splice(position, deleteNode ? 1 : 0, node);
 };
 
 export const moveNode = (

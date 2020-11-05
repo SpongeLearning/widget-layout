@@ -26,10 +26,8 @@ export interface IBaseNode {
     type: NODE_TYPE;
 }
 
-export interface INode extends IBaseNode {
-    id: string;
-    type: NODE_TYPE;
-    children: IBaseNode[];
+export interface INode<N extends IBaseNode> extends IBaseNode {
+    children: N[];
 }
 
 export interface IPanelNode extends IBaseNode {
@@ -45,13 +43,10 @@ export interface IPanelNode extends IBaseNode {
     title: string;
 }
 
-export interface IWidgetNode extends INode {
-    children: IPanelNode[];
-}
+export interface IWidgetNode extends INode<IPanelNode> {}
 
-export interface ILayoutNode extends INode {
+export interface ILayoutNode extends INode<ILayoutNode | IWidgetNode> {
     direction: DIRECTION;
-    children: (ILayoutNode | IWidgetNode)[];
 }
 
 export enum MASK_PART {

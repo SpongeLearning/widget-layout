@@ -7,13 +7,6 @@ class Node extends BaseNode {
     height = 0;
     width = 0;
 
-    addNode(node: BaseNode, position?: number, deleteNode = false) {
-        if (position == null || position > this.children.length) {
-            position = this.children.length;
-        }
-        this.children.splice(position, deleteNode ? 1 : 0, node);
-    }
-
     update() {
         if (shakeTree(this)) {
             this.root?.update();
