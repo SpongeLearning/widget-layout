@@ -16,25 +16,26 @@ import Panel from "./Panel";
 import Titlebar from "./Titlebar";
 
 const useStyle = makeStyles({
-    widget: (props: { node: WidgetNode }) => {
-        const { node } = props;
-        const parent = node.parent;
-        const size = parent?.children.length || 1;
+    widget: (props: {
+        parentDirection: DIRECTION | undefined;
+        length: number | undefined;
+        offset: number;
+    }) => {
+        const { parentDirection, length, offset } = props;
+        const size = length || 1;
         const splitterOffset = (10 * (size - 1)) / size;
         const width =
-            parent?.direction === DIRECTION.ROW ||
-            parent?.direction === DIRECTION.ROWREV
-                ? `calc(${
-                      100 / parent.children.length
-                  }% - ${splitterOffset}px + ${node.offset}px)`
+            length != null &&
+            (parentDirection === DIRECTION.ROW ||
+                parentDirection === DIRECTION.ROWREV)
+                ? `calc(${100 / length}% - ${splitterOffset}px + ${offset}px)`
                 : "100%";
 
         const height =
-            parent?.direction === DIRECTION.COLUMN ||
-            parent?.direction === DIRECTION.COLUMNREV
-                ? `calc(${
-                      100 / parent.children.length
-                  }% - ${splitterOffset}px + ${node.offset}px)`
+            length != null &&
+            (parentDirection === DIRECTION.COLUMN ||
+                parentDirection === DIRECTION.COLUMNREV)
+                ? `calc(${100 / length}% - ${splitterOffset}px + ${offset}px)`
                 : "100%";
 
         return {
@@ -110,7 +111,11 @@ const Widget = (props: { nodeId: string }) => {
     console.debug("Update Widget", nodeId);
 
     const node = useNode(nodeId) as WidgetNode;
-    const classes = useStyle({ node });
+    const classes = useStyle({
+        parentDirection: node.parent?.direction,
+        length: node.parent?.children.length,
+        offset: node.offset,
+    });
 
     const childNodes = useChildNodes(nodeId) as PanelNode[];
 
