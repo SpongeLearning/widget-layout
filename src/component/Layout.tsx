@@ -75,7 +75,6 @@ const Layout = (props: { nodeId: string }) => {
                             parentId={nodeId}
                             primaryId={child.id}
                             secondaryId={array[index + 1].id}
-                            inTime={false}
                         />
                     )}
                 </Fragment>
