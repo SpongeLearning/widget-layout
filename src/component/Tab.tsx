@@ -42,7 +42,7 @@ const Tab = (props: {
 
     return (
         <node.Tab
-            nodeId={node.id}
+            nodeId={nodeId}
             nodeTitle={node.title}
             ref={ref}
             onSelect={onClick}

@@ -44,7 +44,7 @@ const Layout = (props: { nodeId: string }) => {
 
     const ref = useRef<HTMLDivElement>(null);
     const node = useNode(nodeId) as LayoutNode;
-    const childNodes = useChildNodes(node);
+    const childNodes = useChildNodes(nodeId);
     const classes = useStyle({
         node,
     });
@@ -55,7 +55,7 @@ const Layout = (props: { nodeId: string }) => {
     }, [childNodes, node]);
 
     return (
-        <div id={node.id} ref={ref} className={classes.layout}>
+        <div id={nodeId} ref={ref} className={classes.layout}>
             {childNodes.map((child, index, array) => (
                 <Fragment key={child.id}>
                     {child.type === NODE_TYPE.WIDGET_NODE ? (
@@ -67,7 +67,7 @@ const Layout = (props: { nodeId: string }) => {
 
                     {array.length === index + 1 ? null : (
                         <Splitter
-                            parentId={node.id}
+                            parentId={nodeId}
                             primaryId={child.id}
                             secondaryId={array[index + 1].id}
                             inTime={false}

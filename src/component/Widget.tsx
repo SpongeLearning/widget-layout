@@ -112,7 +112,7 @@ const Widget = (props: { nodeId: string }) => {
     const node = useNode(nodeId) as WidgetNode;
     const classes = useStyle({ node });
 
-    const childNodes = useChildNodes(node) as PanelNode[];
+    const childNodes = useChildNodes(nodeId) as PanelNode[];
 
     const ref = useRef<HTMLDivElement>(null);
 
@@ -205,7 +205,7 @@ const Widget = (props: { nodeId: string }) => {
     );
 
     return (
-        <div ref={ref} id={node.id} className={classes.widget}>
+        <div ref={ref} id={nodeId} className={classes.widget}>
             <Titlebar nodeIds={childNodes.map((child) => child.id)} />
             <div ref={widgetRef} className={classes.panel}>
                 <div className={classes[maskPart ? maskPart : "hide"]} />
