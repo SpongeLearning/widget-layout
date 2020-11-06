@@ -8,32 +8,34 @@ import Splitter from "./Splitter";
 import Widget from "./Widget";
 
 const useStyle = makeStyles({
-    layout: (props: { node: LayoutNode }) => {
-        const { node } = props;
-        const parent = node.parent;
-        const size = parent?.children.length || 1;
+    layout: (props: {
+        parentDirection: DIRECTION | undefined;
+        nodeDirection: DIRECTION;
+        length: number | undefined;
+        offset: number;
+    }) => {
+        const { nodeDirection, parentDirection, length, offset } = props;
+        const size = length || 1;
         const splitterOffset = (10 * (size - 1)) / size;
         const width =
-            parent?.direction === DIRECTION.ROW ||
-            parent?.direction === DIRECTION.ROWREV
-                ? `calc(${
-                      100 / parent.children.length
-                  }% - ${splitterOffset}px + ${node.offset}px)`
+            length != null &&
+            (parentDirection === DIRECTION.ROW ||
+                parentDirection === DIRECTION.ROWREV)
+                ? `calc(${100 / length}% - ${splitterOffset}px + ${offset}px)`
                 : "100%";
 
         const height =
-            parent?.direction === DIRECTION.COLUMN ||
-            parent?.direction === DIRECTION.COLUMNREV
-                ? `calc(${
-                      100 / parent.children.length
-                  }% - ${splitterOffset}px + ${node.offset}px)`
+            length != null &&
+            (parentDirection === DIRECTION.COLUMN ||
+                parentDirection === DIRECTION.COLUMNREV)
+                ? `calc(${100 / length}% - ${splitterOffset}px + ${offset}px)`
                 : "100%";
 
         return {
             width,
             height,
             display: "flex",
-            flexDirection: node.direction,
+            flexDirection: nodeDirection,
         };
     },
 });
@@ -46,7 +48,10 @@ const Layout = (props: { nodeId: string }) => {
     const node = useNode(nodeId) as LayoutNode;
     const childNodes = useChildNodes(nodeId);
     const classes = useStyle({
-        node,
+        parentDirection: node.parent?.direction,
+        nodeDirection: node.direction,
+        length: node.parent?.children.length,
+        offset: node.offset,
     });
 
     useEffect(() => {
