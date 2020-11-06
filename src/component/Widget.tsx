@@ -143,10 +143,8 @@ const Widget = (props: { nodeId: string }) => {
                     node.root,
                     event.dragEvent.target.id
                 ) as PanelNode;
-
-                moveNode(dragNode, node, maskPartContainer.current!);
-
                 setMaskPart(null);
+                moveNode(dragNode, node, maskPartContainer.current!);
             })
             .on("dropmove", (event) => {
                 const rect = widgetRef.current?.getBoundingClientRect();
