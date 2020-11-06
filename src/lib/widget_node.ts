@@ -4,7 +4,7 @@ import PanelNode from "./panel_node";
 import { IWidgetNode } from "./type";
 import { movePanelToWidget } from "./utils";
 
-class WidgetNode extends Node implements IWidgetNode {
+class WidgetNode extends Node {
     root: LayoutNode;
     parent?: LayoutNode;
     children: PanelNode[] = [];

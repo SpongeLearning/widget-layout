@@ -10,7 +10,7 @@ import LayoutNode from "./layout_node";
 import { IPanelNode } from "./type";
 import WidgetNode from "./widget_node";
 
-class PanelNode extends BaseNode implements IPanelNode {
+class PanelNode extends BaseNode {
     Page: FunctionComponent;
     Tab: ForwardRefExoticComponent<
         {

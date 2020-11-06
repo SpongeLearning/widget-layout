@@ -3,7 +3,7 @@ import { DIRECTION, ILayoutNode, IWidgetNode, NODE_TYPE } from "./type";
 import { moveNodeToLayout } from "./utils";
 import WidgetNode from "./widget_node";
 
-class LayoutNode extends Node implements ILayoutNode {
+class LayoutNode extends Node {
     direction: DIRECTION;
 
     root: LayoutNode;
