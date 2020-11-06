@@ -123,6 +123,10 @@ const Splitter = (props: {
             }, 16),
             onend: () => {
                 setDragging(false);
+                setMovingOffset(0);
+                primary.offset = primary.offset + offset;
+                secondary.offset = secondary.offset - offset;
+                parent.update();
             },
             cursorChecker: () => {
                 return parent.direction === DIRECTION.ROW ||
